@@ -7,7 +7,7 @@ public class MOVE_LATERAL : MonoBehaviour
 
     //LA VELOCIDAD DE LOS OBJETOS SERA DE (10)
     public float speed = 10f;
-    public PlayerController playerControllerScript;
+    //public PlayerController playerControllerScript;
 
 
     void Start()
