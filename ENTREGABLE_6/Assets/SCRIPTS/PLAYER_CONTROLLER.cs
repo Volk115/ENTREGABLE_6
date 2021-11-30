@@ -7,73 +7,81 @@ public class PLAYER_CONTROLLER : MonoBehaviour
 
     private Rigidbody playerRigidbody;
 
-    //MODIFICA LA GRAVEDAD
-    private float jumpForce = 550f;
-    private float gravityMod = 1.5f;
+    //MODIFICA LA GRAVEDAD Y LIMITES
+    private float jumpForce = 5f;
+    private float gravityMod = 0.7f;
+    private float limY = 14f;
 
-    //SUELO Y GAMEOVER
-    private bool isOnGround = true;
+    //GAMEOVER
     public bool gameOver;
 
     //MUSICA Y EFECTOS DE SONIDO
     private AudioSource playerAudioSource;
-    private AudioSource cameraAudioSource;
-
     public AudioClip colisionClip;
     public AudioClip jumpClip;
 
     //PARTICULAS
-    public ParticleSystem particleSystem;
+    public ParticleSystem explosion;
 
 
     void Start()
     {
         playerRigidbody = GetComponent<Rigidbody>();
-        playerAnimator = GetComponent<Animator>();
         playerAudioSource = GetComponent<AudioSource>();
-        cameraAudioSource = GameObject.Find("Main Camera").GetComponent<AudioSource>();
-
         Physics.gravity *= gravityMod;
     }
 
-    
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isOnGround && !gameOver)
+        if (Input.GetKeyDown(KeyCode.Space) && !gameOver && transform.position.y <= 13f)
         {
             //CUANDO SE SALTA, SE REALIZA UN IMPULSO HACIA ARRIBA
             playerRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            playerAnimator.SetTrigger("Jump_trig");
-
-            //CUANDO SALTA HACE SONIDO DE SALTO
-            playerAudioSource.PlayOneShot(jumpClip, 1);
-            isOnGround = false;
+            playerAudioSource.PlayOneShot(jumpClip, 3);
         }
 
+        if (transform.position.y >= limY)
+        {
+            //SOLO PODEMOS SALTAR HASTA EL LIMITE Y
+            transform.position = new Vector3(transform.position.x, limY, transform.position.z);
+
+        }
     }
+
 
     private void OnCollisionEnter(Collision otherCollider)
     {
         if (!gameOver)
-        {
+        {   //CUANDO CHOCA CON EL SUELO
+            if (otherCollider.gameObject.CompareTag("Ground"))
+            {
+                //COMUNICAMOS QUE HEMOS MUERTO (GAMEOVER)
+                Debug.Log("GameOver");
+                gameOver = true;
+                Destroy(gameObject);
+            }
 
             //CUANDO CHOCA CON LOS OBJETOS LLAMADOS OBSTACLE
             if (otherCollider.gameObject.CompareTag("Obstacle"))
             {
                 //COMUNICAMOS QUE HEMOS MUERTO (GAMEOVER)
                 gameOver = true;
+                Debug.Log("GameOver");
+                Destroy(gameObject);
 
                 //SE REALIZA UNA ANIMACION DE PARTCULAS
-                particleSystem.Play();
+                Instantiate(explosion, gameObject.transform.position, gameObject.transform.rotation);
 
                 //EFECTO DE SONIDO DE PARTICULAS
-                playerAudioSource.PlayOneShot(explosionClip, 1);
-
-                //COMUNICAMOS QUE HEMOS MUERTO (GAMEOVER)
-                gameOver = true;
-
-                isOnGround = false;
+                playerAudioSource.PlayOneShot(colisionClip, 3);
             }
+
+            else
+            {
+                //LA MUSICA SE DETIENE CUANDO EL JUEGO SE ACABA
+                playerAudioSource.Stop();
+            } 
         }
     }
 }

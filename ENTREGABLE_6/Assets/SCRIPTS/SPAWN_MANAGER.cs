@@ -4,92 +4,51 @@ using UnityEngine;
 
 public class SPAWN_MANAGER : MonoBehaviour
 {
-    public GameObject[] bombPrefab;
-    public Vector3 spawnPos = new Vector3(14, 0, 0);
-    //public Vector3 spawnPos = new Vector3(-14, 0, 0);
-    //public int bombPrefab;
+    //QUE ES EL OBJETO Y CUANDO APARECERA
+    public GameObject bombPrefab;
+    public PLAYER_CONTROLLER playerControllerScript;
+    private Vector3 spawnPos;
+    private int start = 1;
 
-    //AL LLGAR AL LIMITE SE ELIMINARA
-    private float upperLim = 30f;
-    private float lowerLim = -5f;
+    //CUANTAS VECES SE REPETIRAN
+    private float repeatBomb = 2f;
 
-    //MUSICA Y SONIDO
-    private AudioSource playerAudioSource;
-    private AudioSource cameraAudioSource;
-
-    public AudioClip explosionClip;
-    public AudioClip jumpClip;
+    //INFO PARA QUE EL ORDEN DE LOS OBJETOS SEA RANDOM EN EL EJE "Y" Y EN LA DERECHA O IZQUIERDA
+    private float randomY;
+    private float randomX;
+    private int left = 0;
+    private int right = 1;
+    private Quaternion rotateObject = Quaternion.Euler(0, 180, 0);
 
     void Start()
     {
-        Instantiate(bombPrefabs[0], spawnPos, bombPrefabs[0].transform.rotation);
-
-        //MUSICA Y SONIDO
-        playerAudioSource = GetComponent<AudioSource>();
-        cameraAudioSource = GameObject.Find("Main Camera").GetComponent<AudioSource>();
+        playerControllerScript = GameObject.Find("Player").GetComponent<PLAYER_CONTROLLER>();
+        InvokeRepeating("Spawner", start, repeatBomb);
 
     }
 
-
-    void Update()
+    private void Spawner() 
     {
-        //SALTO (CUANDO SE TOCA LA BARRA ESPACIADORA, TOCA EL SUELO Y NO ES GAMEOVER)
-
-        if (Input.GetKeyDown(KeyCode.Space) && !gameOver)
+        //EL OBJETO APARECERA ALEATORIAMENTE EN "Y" Y EN LA DERECHA O IZQUEIRDA
+        if (!playerControllerScript.gameOver)
         {
-            //CUANDO SE SALTA, SE REALIZA UN IMPULSO HACIA ARRIBA
-            playerRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            playerAnimator.SetTrigger("Jump_trig");
+            randomY = Random.Range(2, 14);
+            randomX = Random.Range(0, 2);
 
-
-            //CUANDO NO TOCA EL SUELO, HACE VFX DE SALTO (A UN SONIDO DE 1)
-            playerAudioSource.PlayOneShot(jumpClip, 1);
-            isOnGround = false;
-
-            //AL LLGAR AL LIMITE SE ELIMINARA
-            if (transform.position.z > upperLim)
+            //EL OBJETO APARECERA EN LA IZQUIERDA
+            if (randomX == left)
             {
-                Destroy(gameObject);
+                spawnPos = new Vector3(-13, randomY, 0);
+                Instantiate(bombPrefab, spawnPos, bombPrefab.transform.rotation);
             }
-            if (transform.position.z < upperLim)
+            //EN CASO DE APARECER EN LA DERECHA, SE ROTARAN PARA QUE PAREZCA QUE VAN HACIA LA IZQUIERDA
+            if (randomX == right)
             {
-                Destroy(gameObject);
-            }
-        }
-
-        /*n = Random.Range(0, 2);
-        if n == 0
-        {
-            n = -1
-
-        }
-        n* spawnPosx;
-        */
-    }
-
-    //CUANDO SE COLISIONA CON EL SUELO, IS ON THE GROUND = TRUE (HAY COLISION CON EL SUELO)
-    private void OnCollisionEnter(Collision otherCollider)
-    {
-        if (!gameOver)
-        {
-            if (otherCollider.gameObject.CompareTag("Ground"))
-            {
-                isOnGround = true;
-                dirtParticleSystem.Play();
+                spawnPos = new Vector3(13, randomY, 0);
+                Instantiate(bombPrefab, spawnPos, bombPrefab.transform.rotation * rotateObject);
             }
 
-            //CUANDO CHOCA CON LOS OBJETOS LLAMADOS BOMB
-            if (otherCollider.gameObject.CompareTag("Bomb"))
-            {
-                //EFECTO DE SONIDO DE EXPLOSION
-                playerAudioSource.PlayOneShot(explosionClip, 1);
-
-                //COMUNICAMOS QUE HEMOS MUERTO (GAMEOVER)
-                gameOver = true;
-
-                isOnGround = false;
-            }
+            Instantiate(bombPrefab, spawnPos, bombPrefab.transform.rotation);
         }
     }
-
 }

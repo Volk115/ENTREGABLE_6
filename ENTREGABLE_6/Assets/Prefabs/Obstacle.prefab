@@ -11,12 +11,11 @@ GameObject:
   - component: {fileID: 9327320296590957}
   - component: {fileID: 24429313371321499}
   - component: {fileID: 34967986875843705}
-  - component: {fileID: 1902927249581051}
-  - component: {fileID: 1902927249581052}
   - component: {fileID: 6813272084001677359}
+  - component: {fileID: 541766797693434516}
   m_Layer: 0
   m_Name: Obstacle
-  m_TagString: Bomb
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -84,32 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1902927249581051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 11368019182273911}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29e6556bfaaf8448faa6f3f29def86ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spinSpeed: -100
---- !u!114 &1902927249581052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 11368019182273911}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bf1b15f61b704c8e8e279e263bb77b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 10
 --- !u!65 &6813272084001677359
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -123,3 +96,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.42606845, y: 0.45766145, z: 0.44799495}
   m_Center: {x: -0.000000023841858, y: 0.02564087, z: 0.000000047683717}
+--- !u!114 &541766797693434516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11368019182273911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42473ee5fe5d0a743b4c5086f0721948, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 3
+  playerControllerScript: {fileID: 0}
